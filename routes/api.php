@@ -534,6 +534,45 @@ Route::post("/getschoollessonclasespivot", 'SchoolLessonsClasesPivotController@i
 Route::delete('/schoollessonclasespivot/{id}', 'SchoolLessonsClasesPivotController@destroy');
 /*School_Lessons_Clases_Pivot*/
 
+
+
+
+//group
+//okul
+Route::post('/schoolgroup', 'GroupController@schoolgroup');
+Route::post('/classgroup', 'GroupController@classgroup');
+Route::post('/branchgroup', 'GroupController@branchgroup');
+
+
+//kulüp
+Route::post('/clubgroup', 'GroupController@clubgroup');
+Route::post('/clubteamgroup', 'GroupController@clubteamgroup');
+Route::post('/clubbranchgroup', 'GroupController@clubbranchgroup');
+
+//faaliyet
+Route::post('/activitygroup', 'GroupController@activitygroup');
+Route::post('/activityperiodgroup', 'GroupController@activityperiodgroup');
+Route::post('/activitygradegroup', 'GroupController@activitygradegroup');
+
+
+//custom group
+Route::post('/customgroups', 'CustomGroupController@store');
+Route::post('/customgroup', 'CustomGroupController@customgroup');
+Route::put('/customgroups/{id}', 'CustomGroupController@update');
+Route::delete('/customgroups/{id}', 'CustomGroupController@destroy');
+
+//group members
+// Route::post('/groupstudents', 'GroupStudentsController@groupStudents');
+// Route::post('/groupmembers', 'GroupStudentsController@groupMembers');
+// Route::post('/assignmembergroup', 'GroupStudentsController@assignMemberToGroup');
+// Route::post('/removemembergroup', 'GroupStudentsController@removeMemberFromGroup');
+
+Route::post('/doesntmembers', 'GroupMemberController@doesntMembers');
+Route::post('/hasmembers', 'GroupMemberController@hasMembers');
+Route::post('/assignmembergroup', 'GroupMemberController@assignMemberToGroup');
+Route::post('/removemembergroup', 'GroupMemberController@removeMemberFromGroup');
+//group
+
 /*Post*/
 Route::get("/posttest", "PostController@test");
 Route::post("/getPost", "PostController@index");

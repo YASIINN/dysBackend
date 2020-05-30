@@ -124,7 +124,7 @@ class SchoolClasesPivotController extends Controller
             if ($queryparse) {
                 $parser = $this->uriParser->queryparser($queryparse);
                 DB::transaction(function () use ($parser, $id) {
-                    $result = SchoolClasesPivot::where("scid", $id)->delete();
+                    $result = SchoolClasesPivot::where("scid", $id)->get()->first()->delete();
                     if ($result) {
                         $res = SchoolClasesBranchesPivot::where($parser)->delete();
                         if ($res) {
@@ -142,7 +142,7 @@ class SchoolClasesPivotController extends Controller
                 return response()->json([], 500);
             }
         } catch (\Exception $e) {
-            return response()->json([], 500);
+            return response()->json($e->getMessage(), 500);
         }
 
 

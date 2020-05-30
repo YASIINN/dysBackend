@@ -124,7 +124,7 @@ class SchoolClasesBranchesPivotController extends Controller
     public function destroy($id)
     {
         try {
-            $res = SchoolClasesBranchesPivot::where("scbid", $id)->delete();
+            $res = SchoolClasesBranchesPivot::where("scbid", $id)->get()->first()->delete();
             if ($res) {
                 return response()->json('Ürün başarıyla silindi.', 200);
             } else {
@@ -208,7 +208,7 @@ class SchoolClasesBranchesPivotController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            return response()->json([], 500);
+            return response()->json($e->getMessage(), 500);
         }
 
 

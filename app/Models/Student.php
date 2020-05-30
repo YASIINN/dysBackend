@@ -112,4 +112,10 @@ class Student extends Model
                 ->delete();
         });
     }
+
+
+    public function groups()
+    {
+        return $this->morphToMany(Group::class, 'groupable');
+    }
 }

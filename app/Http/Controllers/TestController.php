@@ -25,7 +25,11 @@ use App\Models\SporClub;
 use App\Models\Discontinuity;
 use App\Models\SchoolProgramContent;
 use Validator;
+use App\Models\Group;
 use App\Models\StudentUserPivot as SUP;
+
+use App\Models\SchoolClasesPivot as SC;
+use App\Models\SchoolClasesBranchesPivot as SCB;
 
 use Unlu\Laravel\Api\QueryBuilder;
 
@@ -33,36 +37,28 @@ use Unlu\Laravel\Api\QueryBuilder;
 class TestController extends Controller
 {
 
-public function test(Request $request){
-
-   return Storage::url('public/students/96440121108.jpeg');
-
-
-  return Storage::download('students/96440121108.jpeg');
-  return $url;
-
- $sp = SPC::with(["discounts"])
-            ->where("school_program_id", 1)
-            ->whereHas("discounts", function($q){
-               $q->where("d_type", 2);
-            })
-         ->get();
- return $sp;
-
-
-  $contents = Discontinuity::all();	
-  // return $content->discounts;
-  $data = [];
-  foreach ($contents as $key => $discont) {
-    array_push($data, $discont->contentable);
-  }
+public function test(Request $ssp){
+         
+         //okul grubu
+         $gs = Group::where("groupable_id", $ssp->school_id)->first();
+         $gs->students()->attach([$ssp->student_id]);
  
-  return $data;
-$d = new Discontinuity;
-$d->discontDate = "deneme";
-$d->student_id = 1;
-$d->d_type_id = 1;
+         //okul sınıf grubu işlemleri
+         $sc = SC::where(
+             ["school_id"=>$ssp->school_id, "clases_id"=>$ssp->clases_id]
+         )->first();
+         $gsc = Group::where("groupable_id", $sc->scid)->first();
+         $gsc->students()->attach([$ssp->student_id]);
  
-$content->discounts()->save($d);
+         //okul sınıf sube grubu
+ 
+         //okul sınıf grubu işlemleri
+         $scb = SCB::where(
+             ["school_id"=>$ssp->school_id, "clases_id"=>$ssp->clases_id, "branches_id"=>$ssp->branches_id]
+         )->first();
+         $gscb = Group::where("groupable_id", $scb->scbid)->first();
+         $gscb->students()->attach([$ssp->student_id]);
+         $a = "adem"; 
+
 }
 }

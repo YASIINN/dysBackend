@@ -18,7 +18,7 @@ class Activity extends Model
 
    public function lessons(){
     return $this->belongsToMany(Lessons::class, "lessons_id")->using(ActivityPeriodLessonPivot::class);
-}
+  }
     public  function users()
     {
         return $this->belongsToMany(Users::class, "activity_users");
@@ -70,6 +70,27 @@ class Activity extends Model
   }
   public function uniqaperiods(){
     return $this->periods()->wherePivot('grade_id',null);
+  }
+
+
+     //adem
+     public static function boot()
+     {
+         parent::boot();
+         static::created(function ($act) {
+             $g = new Group;
+             $g->name = $act->aName;
+             $g->code = $act->aCode;
+             $act->group()->save($g);
+         });
+         static::deleting(function ($act) { // before delete() method call this
+             $act->group()->delete();
+         });
+     }
+
+  public function group()
+  {
+      return $this->morphOne(Group::class, 'groupable');
   }
 
 }

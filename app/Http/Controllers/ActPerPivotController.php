@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Activity;
 use App\Models\Period;
+use App\Models\Group;
 use App\Models\ActivityPeriodPivot as AP;
 use App\Models\ActivityPeriodLessonPivot as APL;
 use App\Models\Grade;
@@ -115,7 +116,7 @@ class ActPerPivotController extends Controller
         return response()->json(["message" =>'Faaliyet başarıyla eklendi.'], 201);
        } catch(\Exception $exception){
         $errormsg = 'Faaliyet ekleme sırasında hata meydana geldi.';
-        return response()->json(['errormsg'=>$errormsg]);
+        return response()->json(['errormsg'=>$exception->getMessage()]);
        }
     }
     public function addActPerOther($request){
@@ -138,19 +139,23 @@ class ActPerPivotController extends Controller
                 #
                 break;
         }
-        // if($request["type"] == "date"){
 
-        // } else if($request["type"] == "student"){
-        //     $attributes["student_id"] = $request["other_id"];
-        // }
-        $act->uniqperiods()->save($pr, $attributes);
+        $ap = new AP();
+        $ap->activity_id = $act->id;
+        $ap->period_id = $pr->id;
+        $ap->grade_id = $request["other_id"];
+        $ap->save();
+
+
+       //  $act->uniqperiods()->save($pr, $attributes);
         return $request;
     }
 
 
     public function actperothers(Request $request)
     {
-        $act = Activity::find($request->activity_id);
+        try {
+            $act = Activity::find($request->activity_id);
         $allOthers = [];
         switch ($request->type) {
             case 'grade':
@@ -176,6 +181,9 @@ class ActPerPivotController extends Controller
             'actperNoOthers'=>$diffOthers->all()
         ];
         return $result;
+        } catch (\Throwable $th) {
+            return response()->json($th->getMessage(), 500);
+        }
     }
     public function addActPerLesson(Request $request){
         // return $request;
@@ -255,7 +263,9 @@ class ActPerPivotController extends Controller
         }
         $c = $this->checkOther($request);
         if($c > 0){
-            $act->uniqperiods()->where('id', $request->period_id)->wherePivot("$request->other_where", $request->other_id)->detach();
+            $ap = AP::where("activity_id", $request->activity_id)->where("period_id", $request->period_id)->where("$request->other_where", $request->other_id)->first();
+            $ap->delete();
+            // $act->uniqperiods()->where('id', $request->period_id)->wherePivot("$request->other_where", $request->other_id)->detach();
             return response()->json(["message" =>'Kayıt başarıyla silindi.'], 200);
         } else {
             return response()->json(["message" =>'Sistemde böyle bir kayıt yok.'], 202);

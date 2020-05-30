@@ -154,7 +154,11 @@ class ActivityController extends Controller
             return response()->json(['errormsg' => $errormsg]);
         }
         if (count($act->uniqperiods) > 0) {
-            $act->uniqperiods()->detach();
+            $aps = AP::where("activity_id", $act->id)->get();
+            foreach ($aps as $key => $ap) {
+               $ap->delete();
+            }
+            // $act->uniqperiods()->detach();
         }
         if ($act->delete()) {
             return response()->json(["message" => 'Faliyet başarıyla silindi.'], 200);

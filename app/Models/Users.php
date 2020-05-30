@@ -208,4 +208,9 @@ class Users extends Model
             "club_content_id")
             ->with(['getProgram', 'hour', 'day']);
     }
+
+    public function groups()
+    {
+        return $this->morphToMany(Group::class, 'groupable');
+    }
 }

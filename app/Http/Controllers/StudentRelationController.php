@@ -45,13 +45,19 @@ class StudentRelationController extends Controller
             if($c > 0){
               return response()->json(["message" =>'Öğrenciyi aynı faliyetin farklı sınıflarına eklemeye çalışıyorsunuz.'], 200);
             }
-           $st = Student::findOrFail($request->student_id);
-           $act = Activity::findOrFail($request->activity_id);
-          $attributes = [
-              "period_id"=>$request->period_id,
-              "grade_id"=>$request->grade_id
-          ];
-          $st->activities()->save($act, $attributes);
+            $sap = new StuActPivot();
+            $sap->activity_id = $request->activity_id;
+            $sap->period_id = $request->period_id;
+            $sap->grade_id = $request->grade_id;
+            $sap->student_id = $request->student_id;
+            $sap->save();
+        //    $st = Student::findOrFail($request->student_id);
+        //    $act = Activity::findOrFail($request->activity_id);
+        //   $attributes = [
+        //       "period_id"=>$request->period_id,
+        //       "grade_id"=>$request->grade_id
+        //   ];
+        //   $st->activities()->save($act, $attributes);
           return response()->json(["message" =>'Öğrenci faaliyete başarılı bir şekilde eklendi.'], 201);
        } catch(\Exception $exception){
         $errormsg = 'Faaliyet ekleme sırasında hata meydana geldi.';
@@ -124,12 +130,18 @@ class StudentRelationController extends Controller
             if($c > 0){
               return response()->json(["message" =>'Öğrenciyi bir dönemde tek bir okula ekleyebilirsiniz.'], 200);
             }
-           $sc = School::findOrFail($request->school_id);
-           $attributes = [
-              "clases_id"=>$request->class_id,
-              "branches_id"=>$request->branch_id
-          ];
-          $st->schools()->save($sc, $attributes);
+            $ssp = new SSCBPivot();
+            $ssp->school_id = $request->school_id;
+            $ssp->clases_id = $request->class_id;
+            $ssp->branches_id = $request->branch_id;
+            $ssp->student_id = $request->student_id;
+            $ssp->save();
+        //    $sc = School::findOrFail($request->school_id);
+        //    $attributes = [
+        //       "clases_id"=>$request->class_id,
+        //       "branches_id"=>$request->branch_id
+        //   ];
+        //   $st->schools()->save($sc, $attributes);
           return response()->json(["message" =>'Öğrenci okula başarılı bir şekilde eklendi.'], 201);
        } catch(\Exception $exception){
         $errormsg = 'Faaliyet ekleme sırasında hata meydana geldi.';

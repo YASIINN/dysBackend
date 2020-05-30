@@ -70,14 +70,16 @@ class SporClubTeamBranchController extends Controller
 
     public function delete(Request $request, $id)
     {
+        
         try {
-            if (SporClubTeamBranch::where("sctbid", $id)->delete()) {
+            $stb = SporClubTeamBranch::find($id);
+            if ($stb->delete()) {
                 return response()->json('Ürün başarıyla silindi.');
             } else {
                 return response()->json([], 500);
             }
         } catch (\Exception $e) {
-            return response()->json($e, 500);
+            return response()->json($e->getMessage(), 500);
         }
     }
 
